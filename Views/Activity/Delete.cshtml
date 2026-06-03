@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Aktiviteyi Sil";
+}
+@model MythosBalance.ViewModels.ActivityEditViewModel
+
+<div class="container py-4 position-relative z-1">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="page-header">
+                <h1 style="color:#e06c75;"><i class="bi bi-trash3 me-2" style="font-size:1.5rem;"></i>Aktiviteyi Sil</h1>
+                <p>Bu işlem geri alınamaz. Emin misiniz?</p>
+            </div>
+
+            <div class="glass-card p-4">
+                <!-- Aktivite Önizleme -->
+                <div style="background:rgba(224,108,117,0.06); border:1px solid rgba(224,108,117,0.2);
+                            border-radius:var(--radius-md); padding:1.25rem; margin-bottom:1.5rem;">
+                    <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em;
+                                color:#e06c75; margin-bottom:0.5rem;">Silinecek Aktivite</div>
+                    <div style="font-size:1rem; font-weight:600;">@Model.Title</div>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div style="font-size:0.85rem; color:var(--color-muted); margin-top:0.3rem;">@Model.Description</div>
+                    }
+                    <div style="font-size:0.8rem; color:var(--color-muted); margin-top:0.5rem;">
+                        @Model.Date.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                        @if (Model.DurationMinutes.HasValue)
+                        {
+                            <span class="ms-2">· @Model.DurationMinutes dakika</span>
+                        }
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn-ghost">
+                            <i class="bi bi-arrow-left me-1"></i>Vazgeç
+                        </a>
+                        <button type="submit" class="btn-danger-ghost"
+                                style="padding:0.55rem 1.2rem; font-size:0.875rem;"
+                                id="confirmDeleteBtn">
+                            <i class="bi bi-trash3 me-1"></i>Evet, Sil
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

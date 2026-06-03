@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model MythosBalance.ViewModels.LoginViewModel
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <div class="auth-logo d-flex align-items-center justify-content-center">
+            <img src="~/images/logo.png" alt="Logo" style="height:54px; width:54px; object-fit:cover; border-radius:50%; margin-right:12px; border:1px solid rgba(201,168,76,0.3);" />
+            <span>Mythos Balance</span>
+        </div>
+        <p class="auth-subtitle">Yolculuğunuza devam etmek için giriş yapın</p>
+
+        <hr class="auth-divider" />
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+            @Html.AntiForgeryToken()
+
+            <!-- Hata mesajı -->
+            <div asp-validation-summary="ModelOnly" class="alert-danger-mythos mb-3" style="border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem; display:none;"></div>
+            @{
+                var errors = ViewData.ModelState.Values.SelectMany(v => v.Errors);
+                if (errors.Any())
+                {
+                    <div class="alert-danger-mythos mb-3" style="border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem;">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        @errors.First().ErrorMessage
+                    </div>
+                }
+            }
+
+            <!-- E-posta -->
+            <div class="mb-3">
+                <label class="form-label-mythos" for="loginEmail">E-posta Adresi</label>
+                <input asp-for="Email"
+                       id="loginEmail"
+                       class="form-control-mythos"
+                       type="email"
+                       placeholder="ornek@email.com"
+                       autocomplete="email" />
+            </div>
+
+            <!-- Şifre -->
+            <div class="mb-4">
+                <label class="form-label-mythos" for="loginPassword">Şifre</label>
+                <input asp-for="Password"
+                       id="loginPassword"
+                       class="form-control-mythos"
+                       type="password"
+                       placeholder="••••••••"
+                       autocomplete="current-password" />
+            </div>
+
+            <!-- Beni hatırla -->
+            <div class="mb-4 d-flex align-items-center gap-2">
+                <input asp-for="RememberMe" id="rememberMe" type="checkbox"
+                       style="width:16px;height:16px;accent-color:var(--color-gold);cursor:pointer;" />
+                <label for="rememberMe" style="font-size:0.83rem; color:var(--color-muted); cursor:pointer;">Beni hatırla</label>
+            </div>
+
+            <button type="submit" class="btn-gold w-100 py-2" id="loginBtn">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+            </button>
+        </form>
+
+        <hr class="auth-divider" />
+
+        <p style="text-align:center; font-size:0.85rem; color:var(--color-muted);">
+            Hesabınız yok mu?
+            <a asp-controller="Account" asp-action="Register"
+               style="color:var(--color-gold); text-decoration:none; font-weight:500;">
+                Kayıt Ol
+            </a>
+        </p>
+
+        <!-- Demo bilgisi -->
+        <div class="alert-mythos mt-3" style="font-size:0.78rem; text-align:center;">
+            <i class="bi bi-info-circle me-1"></i>
+            Demo: <strong>demo@mythosbalance.com</strong> / <strong>Demo123!</strong>
+        </div>
+    </div>
+</div>

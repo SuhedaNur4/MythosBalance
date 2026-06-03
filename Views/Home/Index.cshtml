@@ -1,0 +1,218 @@
+@{
+    ViewData["Title"] = "Pano";
+}
+@model MythosBalance.ViewModels.DashboardViewModel
+
+@section Modals {
+    @if (Model.PendingNotifications.Any())
+    {
+        <div class="modal fade modal-mythos" id="notificationModal" tabindex="-1"
+             data-has-notifications="true"
+             aria-labelledby="notificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="notificationModalLabel">
+                            <i class="bi bi-bell me-2"></i>Küçük Hatırlatmalar
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <div class="modal-body p-3">
+                        <p style="font-size:0.82rem; color:var(--color-muted); margin-bottom:1rem;">
+                            Bazı yaşam alanlarında bir süredir aktivite kaydetmediniz. Bunlar yalnızca dostça bir hatırlatma.
+                        </p>
+                        @Html.AntiForgeryToken()
+                        @foreach (var notif in Model.PendingNotifications)
+                        {
+                            <div class="notification-item" id="notif-item-@notif.Id">
+                                <div class="notification-icon" style="background:transparent;">
+                                    @if (notif.LifeDomain?.MythologyGuide != null && !string.IsNullOrEmpty(notif.LifeDomain.MythologyGuide.ImagePath))
+                                    {
+                                        <img src="@notif.LifeDomain.MythologyGuide.ImagePath" alt="Guide" style="width:48px; height:48px; object-fit:cover; border-radius:50%; border: 1px solid var(--color-gold);" />
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-@(notif.LifeDomain?.IconClass?.Replace("bi bi-", "") ?? "bell")"></i>
+                                    }
+                                </div>
+                                <div style="flex:1;">
+                                    <div class="notification-text">@notif.Message</div>
+                                    @if (notif.LifeDomain != null)
+                                    {
+                                        <div class="notification-domain">@notif.LifeDomain.TurkishName</div>
+                                    }
+                                </div>
+                                <button class="btn-ghost btn-dismiss-notification"
+                                        data-notif-id="@notif.Id"
+                                        style="padding:0.3rem 0.6rem; font-size:0.75rem; flex-shrink:0;">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer" style="border-top:1px solid var(--color-border);">
+                        <button type="button" class="btn-ghost" id="btn-dismiss-all-notifs" data-bs-dismiss="modal">Tamam, anladım</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="container py-4 position-relative z-1">
+
+    <!-- ===== KARŞILAMA ===== -->
+    <div class="mb-4">
+        <h1 style="font-family:var(--font-display); font-size:1.7rem; color:var(--color-gold); letter-spacing:0.04em;">
+            Hoş geldin, @Model.DisplayName.Split(' ')[0]
+        </h1>
+        <p style="color:var(--color-muted); font-size:0.9rem; margin-top:0.2rem;">
+            Bugün hangi alanda bir adım atmak istersin?
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ===== OLİMPOS (SOL KOLON) ===== -->
+        <div class="col-lg-7">
+            <!-- Mitoloji Rehberleri Hızlı Erişim -->
+            <div class="glass-card-flat p-4 mb-4">
+                <h2 style="font-family:var(--font-display); font-size:1rem; color:var(--color-gold); margin-bottom:0.4rem;">
+                    <i class="bi bi-book-half me-2"></i>Olimpos
+                </h2>
+                <p style="font-size:0.75rem; color:var(--color-muted); margin-bottom:1rem; line-height:1.4;">
+                    Pek çok mitolojik figür olsa da biz bu özel rehberlere odaklanıyoruz.
+                </p>
+                <div class="d-flex overflow-auto pb-3 gap-3" style="scrollbar-width: thin;">
+                    @foreach (var guide in Model.Guides.Take(5))
+                    {
+                        var img2 = guide.Name switch {
+                            "Hygieia" => "/images/gods/Hygieia2.jpg",
+                            "Athena" => "/images/gods/Athena2.jpg",
+                            "Apollo" => "/images/gods/Apollo2.jpg",
+                            "Hermes" => "/images/gods/Hermes2.jpg",
+                            "Charites" => "/images/gods/Charites2.png",
+                            _ => guide.ImagePath
+                        };
+                        var quote = guide.Name switch {
+                            "Hygieia" => "\"Bedenine iyi bak ki ruhun özgürleşsin.\"",
+                            "Athena" => "\"Bilgelik, dengeli bir yaşamın anahtarıdır.\"",
+                            "Apollo" => "\"Yaratıcılık, içindeki ışığın dışa vurumudur.\"",
+                            "Hermes" => "\"Her yeni adım, yeni bir keşiftir.\"",
+                            "Charites" => "\"Bağ kurmak, ruhu besleyen en tatlı meyvedir.\"",
+                            _ => "\"Denge, büyümenin temelidir.\""
+                        };
+
+                        <a asp-controller="Guide" asp-action="Detail" asp-route-id="@guide.Id"
+                           style="text-decoration:none; display:flex; flex-direction:column; width:130px; flex-shrink:0; transition:var(--transition);"
+                           onmouseover="this.style.transform='translateY(-4px)'"
+                           onmouseout="this.style.transform='translateY(0)'">
+                            <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; border:1px solid rgba(154,110,46,0.25); margin-bottom:0.5rem; position:relative; box-shadow:0 4px 12px rgba(60,40,10,0.12);">
+                                <img src="@img2" alt="@guide.Name" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.85) contrast(1.05);" />
+                            </div>
+                            <div style="font-size:0.9rem; font-weight:600; color:var(--color-gold); text-align:center;">@guide.Name.ToUpperInvariant()</div>
+                            <div style="font-size:0.7rem; color:var(--color-muted); text-align:center; font-style:italic; line-height:1.4; margin-top:0.35rem;">@quote</div>
+                        </a>
+                    }
+                </div>
+                <div style="margin-top:0.75rem; text-align:right;">
+                    <a asp-controller="Guide" asp-action="Index"
+                       style="font-size:0.8rem; color:var(--color-gold); text-decoration:none;">
+                        Tüm Olimpos Rehberleri →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SAĞ KOLON (Yaşam Alanları + Son Aktiviteler) ===== -->
+        <div class="col-lg-5">
+
+            <!-- Alan Özeti -->
+            <div class="glass-card-flat p-4 mb-4">
+                <h2 style="font-family:var(--font-display); font-size:1rem; color:var(--color-gold); margin-bottom:0.2rem;">
+                    <i class="bi bi-bar-chart me-2"></i>Yaşam Alanları
+                </h2>
+                <p style="font-size:0.75rem; color:var(--color-muted); margin-bottom:1rem;">
+                    Yalnızca <strong>@Model.CurrentMonthName</strong> ayına ait aktivite verileri gösterilmektedir.
+                </p>
+
+                @foreach (var domain in Model.LifeDomains)
+                {
+                    var count = Model.ActivityCountByDomainThisMonth.TryGetValue(domain.TurkishName, out int c) ? c : 0;
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div style="width:32px; height:32px; border-radius:8px; background:@(domain.ColorHex + "22");
+                                    border:1px solid @(domain.ColorHex + "55");
+                                    display:flex; align-items:center; justify-content:center;
+                                    color:@domain.ColorHex; font-size:0.85rem; flex-shrink:0;">
+                            <i class="@domain.IconClass"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:0.82rem; font-weight:500;">
+                                @domain.TurkishName
+                            </div>
+                            <div style="height:4px; background:rgba(60,40,10,0.08); border-radius:2px; margin-top:4px;">
+                                @{
+                                    var pct = Model.TotalActivityCountThisMonth > 0 ? Math.Min(100, count * 100 / Math.Max(1, Model.TotalActivityCountThisMonth)) : 0;
+                                }
+                                <div style="height:4px; width:@(pct)%; background:@domain.ColorHex; border-radius:2px; transition:width 0.6s ease;"></div>
+                            </div>
+                        </div>
+                        <span style="font-size:0.78rem; color:var(--color-muted); width:20px; text-align:right;">@count</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Son Aktiviteler -->
+            <div class="glass-card p-0 overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between px-4 pt-4 pb-3">
+                    <h2 style="font-family:var(--font-display); font-size:1rem; color:var(--color-gold); margin:0;">
+                        <i class="bi bi-clock-history me-2"></i>Son Aktiviteler
+                    </h2>
+                    <a asp-controller="Activity" asp-action="Create" class="btn-gold" style="font-size:0.78rem; padding:0.4rem 0.9rem;">
+                        <i class="bi bi-plus-lg me-1"></i>Yeni Ekle
+                    </a>
+                </div>
+
+                @if (!Model.RecentActivities.Any())
+                {
+                    <div style="padding:2.5rem 1.5rem; text-align:center; color:var(--color-muted);">
+                        <i class="bi bi-journal-x" style="font-size:2rem; opacity:0.4; display:block; margin-bottom:0.75rem;"></i>
+                        Henüz bir aktivite kaydınız yok.<br />
+                        <a asp-controller="Activity" asp-action="Create"
+                           style="color:var(--color-gold); font-size:0.85rem; text-decoration:none;">
+                            İlk aktivitenizi ekleyin →
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var activity in Model.RecentActivities)
+                    {
+                        <div class="activity-row">
+                            <div class="activity-dot" style="background-color:@activity.LifeDomain.ColorHex;"></div>
+                            <div style="flex:1; min-width:0;">
+                                <div class="activity-title text-truncate">@activity.Title</div>
+                                <div class="activity-meta">
+                                    @activity.LifeDomain.TurkishName
+                                    <span class="mx-1">·</span>
+                                    @activity.Date.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                                    @if (activity.DurationMinutes.HasValue)
+                                    {
+                                        <span class="mx-1">·</span>
+                                        <text>@(activity.DurationMinutes) dk</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div style="padding:0.85rem 1.25rem; text-align:right; border-top:1px solid rgba(60,40,10,0.07);">
+                        <a asp-controller="Activity" asp-action="Index"
+                           style="font-size:0.8rem; color:var(--color-gold); text-decoration:none;">
+                            Tümünü Görüntüle →
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

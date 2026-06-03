@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Yeni Aktivite";
+}
+@model MythosBalance.ViewModels.ActivityCreateViewModel
+
+<div class="container py-4 position-relative z-1">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="page-header">
+                <h1><i class="bi bi-plus-circle me-2" style="font-size:1.5rem;"></i>Yeni Aktivite Ekle</h1>
+                <p>Bugün ne yaptınız? Küçük adımlar büyük değişimler yaratır.</p>
+            </div>
+
+            <div class="mt-4" style="max-width: 600px;">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    @{
+                        var errors = ViewData.ModelState.Values.SelectMany(v => v.Errors);
+                        if (errors.Any())
+                        {
+                            <div class="alert-danger-mythos mb-4" style="border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem;">
+                                <i class="bi bi-exclamation-circle me-2"></i>@errors.First().ErrorMessage
+                            </div>
+                        }
+                    }
+
+                    <!-- Başlık -->
+                    <div class="mb-4">
+                        <label class="label-minimal" for="actTitle">Ne yaptınız?</label>
+                        <input asp-for="Title" id="actTitle" class="input-minimal"
+                               placeholder="ör: Sabah yürüyüşü, kitap okuma…" />
+                    </div>
+
+                    <!-- Yaşam Alanı -->
+                    <div class="mb-4">
+                        <label class="label-minimal" for="actDomain">Hangi Yaşam Alanı?</label>
+                        <select asp-for="LifeDomainId" asp-items="Model.LifeDomainOptions"
+                                id="actDomain" class="input-minimal select-minimal">
+                            <option value="">— Bir alan seçin —</option>
+                        </select>
+                    </div>
+
+                    <!-- Tarih + Süre yan yana -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-sm-6">
+                            <label class="label-minimal" for="actDate">Ne Zaman?</label>
+                            <input asp-for="Date" id="actDate" class="input-minimal" type="date" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="label-minimal" for="actDuration">Süre (Dakika)</label>
+                            <input asp-for="DurationMinutes" id="actDuration" class="input-minimal"
+                                   type="number" min="1" max="1440" placeholder="ör: 30" />
+                        </div>
+                    </div>
+
+                    <!-- Açıklama -->
+                    <div class="mb-5">
+                        <label class="label-minimal" for="actDesc">Açıklama (İsteğe Bağlı)</label>
+                        <textarea asp-for="Description" id="actDesc" class="input-minimal"
+                                  rows="1" placeholder="Küçük bir not..."
+                                  style="resize:none; overflow:hidden;"
+                                  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                    </div>
+
+                    <!-- Butonlar -->
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn-gold" id="saveActivityBtn">
+                            <i class="bi bi-check2 me-1"></i>Listeye Ekle
+                        </button>
+                        <a asp-action="Index" class="btn-ghost" style="border:none;">
+                            İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

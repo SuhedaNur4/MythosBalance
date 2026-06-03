@@ -1,0 +1,246 @@
+@{
+    ViewData["Title"] = Model.Guide.Name + " — Mitoloji Rehberi";
+}
+@model MythosBalance.ViewModels.GuideDetailViewModel
+
+@{
+    var guideEmojis = new Dictionary<string, string>
+    {
+        ["Hygieia"] = "🏺", ["Athena"] = "🦉", ["Apollo"] = "🎵", ["Hermes"] = "🌿", ["Charites"] = "🤝"
+    };
+    var emoji = guideEmojis.TryGetValue(Model.Guide.Name, out var em) ? em : "⭐";
+}
+
+<div class="container py-4 position-relative z-1">
+
+    <!-- Geri Butonu -->
+    <div class="mb-3">
+        <a asp-controller="Guide" asp-action="Index" class="btn-ghost d-inline-flex align-items-center mb-4">
+            <i class="bi bi-arrow-left me-1"></i>Tüm Olimpos Rehberleri
+        </a>
+    </div>
+
+    <!-- ===== HERO BÖLÜMÜ ===== -->
+    <div class="glass-card p-0 overflow-hidden mb-4">
+        @if (!string.IsNullOrEmpty(Model.Guide.ImagePath))
+        {
+            <div style="width:100%; position:relative;">
+                <img src="@Model.Guide.ImagePath" alt="@Model.Guide.Name" style="width:100%; height:auto; display:block; filter:brightness(0.7) contrast(1.1);" />
+                <div style="position:absolute; bottom:0; left:0; width:100%; height:4px; background:@Model.Domain.ColorHex;"></div>
+            </div>
+        }
+        else
+        {
+            <div style="height:4px; background:@Model.Domain.ColorHex;"></div>
+        }
+        <div class="guide-hero">
+
+            <!-- Alan etiketi -->
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.15em;
+                        color:var(--color-muted); margin-bottom:1rem;">
+                ✦ &nbsp; @Model.Domain.TurkishName Rehberi &nbsp; ✦
+            </div>
+
+            <!-- Emoji -->
+            <div style="font-size:4rem; margin-bottom:1rem;">@emoji</div>
+
+            <h1 class="guide-hero-name" style="text-transform:none;">@Model.Guide.Name.ToUpperInvariant()</h1>
+            <div class="guide-hero-title">@Model.Guide.Title</div>
+
+            <p class="guide-hero-quote">@Model.Guide.ShortDescription</p>
+
+            <!-- Semboller -->
+            <div style="margin-top:1.5rem;">
+                @foreach (var sym in Model.SymbolList)
+                {
+                    <span class="symbol-tag">@sym</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== İÇERİK BÖLÜMÜ ===== -->
+    <div class="row g-4">
+
+        <!-- Sol Sütun -->
+        <div class="col-lg-8">
+
+            <!-- Kim Bu Figür? -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="bi bi-person-circle"></i> Kim Bu Figür?
+                </div>
+                <p style="font-size:0.92rem; color:var(--color-text); line-height:1.85; margin:0;">
+                    @Model.Guide.FullDescription
+                </p>
+            </div>
+
+            <!-- Tarihsel Arka Plan -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="bi bi-hourglass-split"></i> Tarihsel Arka Plan
+                </div>
+                <p style="font-size:0.92rem; color:var(--color-text); line-height:1.85; margin:0;">
+                    @Model.Guide.HistoricalBackground
+                </p>
+            </div>
+
+            <!-- Mitolojik Hikaye -->
+            <div class="detail-section">
+                <div class="detail-section-title">
+                    <i class="bi bi-feather"></i> Mitolojik Hikaye
+                </div>
+                <p style="font-size:0.92rem; color:var(--color-text); line-height:1.85; margin:0;">
+                    @Model.Guide.MythologicalStory
+                </p>
+            </div>
+
+            <!-- Neden Bu Kategori? -->
+            <div class="detail-section" style="border-color:rgba(@(Model.Domain.ColorHex), 0.3);">
+                <div class="detail-section-title" style="color:@Model.Domain.ColorHex;">
+                    <i class="@Model.Domain.IconClass"></i> Neden @Model.Guide.Name @Model.Domain.TurkishName Alanını Temsil Eder?
+                </div>
+                <p style="font-size:0.92rem; color:var(--color-text); line-height:1.85; margin:0;">
+                    @Model.Guide.WhyThisGuide
+                </p>
+            </div>
+
+            @if (Model.Guide.Name == "Charites")
+            {
+                <div class="detail-section" style="border-color:var(--color-gold);">
+                    <div class="detail-section-title" style="color:var(--color-gold);">
+                        <i class="bi bi-people"></i> Khariteler (Üç Güzel)
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <img src="/images/gods/Aglaia.png" alt="Aglaia" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid rgba(201,168,76,0.5);" />
+                            <h5 style="color:var(--color-gold); font-family:var(--font-display); font-size:1.25rem; margin:0;">Aglaia (Parlaklık ve Nezaket)</h5>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--color-muted); margin-bottom:0.5rem;">
+                            <strong>Temsil Ettiği:</strong> Nezaket, Zarafet, Empati, Pozitif Etkileşim<br/>
+                            <strong>Önerilen Aktiviteler:</strong> Arkadaşa yardım etmek, Gönüllü olmak, Birine destek olmak
+                        </p>
+                        <div style="font-style:italic; border-left:3px solid var(--color-gold); padding-left:1rem; font-size:0.85rem; color:var(--color-text);">
+                            "Küçük bir nezaket bazen beklenmedik bağlar kurabilir."
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <img src="/images/gods/Euphrosyne.png" alt="Euphrosyne" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid rgba(201,168,76,0.5);" />
+                            <h5 style="color:var(--color-gold); font-family:var(--font-display); font-size:1.25rem; margin:0;">Euphrosyne (Neşe ve Mutluluk)</h5>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--color-muted); margin-bottom:0.5rem;">
+                            <strong>Temsil Ettiği:</strong> Neşe, Mutluluk, Paylaşılan Deneyimler, Eğlence<br/>
+                            <strong>Önerilen Aktiviteler:</strong> Arkadaşlarla buluşmak, Birlikte oyun oynamak, Sevdiklerle keyifli vakit geçirmek
+                        </p>
+                        <div style="font-style:italic; border-left:3px solid var(--color-gold); padding-left:1rem; font-size:0.85rem; color:var(--color-text);">
+                            "Paylaşılan mutluluklar çoğu zaman daha uzun süre hatırlanır."
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <img src="/images/gods/Thalia.png" alt="Thalia" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid rgba(201,168,76,0.5);" />
+                            <h5 style="color:var(--color-gold); font-family:var(--font-display); font-size:1.25rem; margin:0;">Thalia (Bolluk ve Topluluk)</h5>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--color-muted); margin-bottom:0.5rem;">
+                            <strong>Temsil Ettiği:</strong> Kutlama, Toplumsal Katılım, Sosyal Etkinlikler, Kolektif Deneyimler<br/>
+                            <strong>Önerilen Aktiviteler:</strong> Bir etkinliğe katılmak, Kulüp faaliyetine katılmak, Topluluk buluşmalarında yer almak
+                        </p>
+                        <div style="font-style:italic; border-left:3px solid var(--color-gold); padding-left:1rem; font-size:0.85rem; color:var(--color-text);">
+                            "Yeni insanlar ve yeni deneyimler hayatımıza farklı bakış açıları katabilir."
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <!-- Sağ Sütun -->
+        <div class="col-lg-4">
+
+            <!-- Semboller Detay -->
+            <div class="detail-section mb-4">
+                <div class="detail-section-title">
+                    <i class="bi bi-stars"></i> Sembolleri
+                </div>
+                @foreach (var sym in Model.SymbolList)
+                {
+                    <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.6rem;">
+                        <span style="color:var(--color-gold); font-size:0.85rem;">✦</span>
+                        <span style="font-size:0.88rem;">@sym</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Yaşam Alanı -->
+            <div class="detail-section mb-4">
+                <div class="detail-section-title">
+                    <i class="bi bi-grid-1x2"></i> Bağlı Yaşam Alanı
+                </div>
+                <div style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem;
+                            background:rgba(60,40,10,0.03); border-radius:var(--radius-sm);">
+                    <div style="width:40px; height:40px; border-radius:10px;
+                                background:@(Model.Domain.ColorHex + "22");
+                                border:1px solid @(Model.Domain.ColorHex + "55");
+                                display:flex; align-items:center; justify-content:center;
+                                color:@Model.Domain.ColorHex; font-size:1.1rem;">
+                        <i class="@Model.Domain.IconClass"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600; font-size:0.9rem;">@Model.Domain.TurkishName</div>
+                        <div style="font-size:0.78rem; color:var(--color-muted);">@Model.Domain.Description</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaynaklar -->
+            @if (Model.Guide.References.Any())
+            {
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="bi bi-book"></i> Kaynaklar ve Referanslar
+                    </div>
+                    @foreach (var ref_ in Model.Guide.References)
+                    {
+                        <div style="margin-bottom:0.85rem; padding-bottom:0.85rem;
+                                    border-bottom:1px solid rgba(60,40,10,0.07);">
+                            <div style="font-size:0.85rem; font-weight:500;">@ref_.Title</div>
+                            @if (!string.IsNullOrEmpty(ref_.Author))
+                            {
+                                <div style="font-size:0.78rem; color:var(--color-muted); margin-top:0.15rem;">
+                                    @ref_.Author
+                                    @if (ref_.Year.HasValue) { <text> (@ref_.Year)</text> }
+                                    @if (!string.IsNullOrEmpty(ref_.Publisher)) { <text> — @ref_.Publisher</text> }
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(ref_.Url))
+                            {
+                                <a href="@ref_.Url" target="_blank" rel="noopener"
+                                   style="font-size:0.75rem; color:var(--color-gold); text-decoration:none;">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i>Ziyaret Et
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <!-- Aktivite Ekle CTA -->
+    <div class="glass-card p-4 mt-4 text-center">
+        <p style="color:var(--color-muted); font-size:0.9rem; margin-bottom:1rem;">
+            @Model.Guide.Name'nin rehberliğinde <strong style="color:var(--color-text);">@Model.Domain.TurkishName</strong> alanında bir adım atmak ister misiniz?
+        </p>
+        <a asp-controller="Activity" asp-action="Create"
+           class="btn-gold" style="display:inline-flex; align-items:center; gap:0.5rem;">
+            <i class="bi bi-plus-circle"></i>
+            @Model.Domain.TurkishName Aktivitesi Ekle
+        </a>
+    </div>
+
+</div>

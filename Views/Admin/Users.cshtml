@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+@model List<MythosBalance.ViewModels.AdminUserViewModel>
+
+<div class="admin-layout position-relative z-1">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <div style="font-family:var(--font-display); font-size:0.9rem; color:var(--color-gold); padding:0.5rem 0.5rem 1rem;">
+            <i class="bi bi-shield-check me-2"></i>Yönetim
+        </div>
+        <div class="admin-sidebar-title">Menü</div>
+        <a class="admin-nav-link" href="/Admin"><i class="bi bi-speedometer2"></i> Pano</a>
+        <a class="admin-nav-link" href="/Admin/Users"><i class="bi bi-people"></i> Kullanıcılar</a>
+        <a class="admin-nav-link" href="/Admin/Guides"><i class="bi bi-book-half"></i> Olimpos</a>
+        <div class="admin-sidebar-title" style="margin-top:1.5rem;">Diğer</div>
+        <a class="admin-nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Panoya Dön</a>
+    </aside>
+
+    <!-- İÇERİK -->
+    <div class="admin-content">
+        <div class="mb-4">
+            <h1 style="font-family:var(--font-display); font-size:1.5rem; color:var(--color-gold);">
+                <i class="bi bi-people me-2"></i>Kullanıcı Yönetimi
+            </h1>
+            <p style="color:var(--color-muted); font-size:0.88rem;">Toplam @Model.Count kayıtlı kullanıcı.</p>
+        </div>
+
+        <div class="glass-card p-0 overflow-hidden">
+            <!-- Tablo başlığı -->
+            <div style="display:grid; grid-template-columns:1fr 1fr auto auto auto;
+                        gap:1rem; padding:0.7rem 1.25rem;
+                        border-bottom:1px solid var(--color-border);
+                        font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-muted);">
+                <span>Kullanıcı</span>
+                <span>E-posta</span>
+                <span>Rol</span>
+                <span>Aktivite</span>
+                <span>İşlem</span>
+            </div>
+
+            @foreach (var user in Model)
+            {
+                <div style="display:grid; grid-template-columns:1fr 1fr auto auto auto;
+                            gap:1rem; align-items:center; padding:0.85rem 1.25rem;
+                            border-bottom:1px solid rgba(255,255,255,0.03);
+                            transition:var(--transition);"
+                     onmouseover="this.style.background='rgba(255,255,255,0.02)'"
+                     onmouseout="this.style.background='transparent'">
+
+                    <!-- Kullanıcı -->
+                    <div style="display:flex; align-items:center; gap:0.6rem; min-width:0;">
+                        <div style="width:32px; height:32px; border-radius:50%; flex-shrink:0;
+                                    background:var(--color-gold-dim); border:1px solid var(--color-border);
+                                    display:flex; align-items:center; justify-content:center;
+                                    font-family:var(--font-display); color:var(--color-gold); font-size:0.85rem;">
+                            @(user.DisplayName.Length > 0 ? user.DisplayName[0].ToString().ToUpper() : "?")
+                        </div>
+                        <div style="min-width:0;">
+                            <div style="font-size:0.88rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                @user.DisplayName
+                            </div>
+                            <div style="font-size:0.73rem; color:var(--color-muted);">
+                                @user.CreatedAt.ToString("d MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-posta -->
+                    <div style="font-size:0.83rem; color:var(--color-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        @user.Email
+                    </div>
+
+                    <!-- Rol -->
+                    <div>
+                        <span style="font-size:0.75rem; padding:0.2rem 0.65rem; border-radius:99px; white-space:nowrap;
+                                     @(user.Role == "Admin" ? "background:rgba(201,168,76,0.15); color:var(--color-gold); border:1px solid rgba(201,168,76,0.3);" : "background:rgba(97,175,239,0.1); color:#61afef; border:1px solid rgba(97,175,239,0.25);")">
+                            @user.Role
+                        </span>
+                    </div>
+
+                    <!-- Aktivite sayısı -->
+                    <div style="font-size:0.85rem; color:var(--color-muted); text-align:center;">
+                        @user.ActivityCount
+                    </div>
+
+                    <!-- Rol Değiştir -->
+                    <form asp-action="ToggleRole" asp-controller="Admin" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn-ghost" style="font-size:0.75rem; padding:0.3rem 0.7rem; white-space:nowrap;"
+                                title="@(user.Role == "Admin" ? "User'a geçir" : "Admin'e geçir")">
+                            <i class="bi bi-arrow-left-right"></i>
+                            @(user.Role == "Admin" ? "User Yap" : "Admin Yap")
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>

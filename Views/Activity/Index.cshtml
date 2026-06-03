@@ -1,0 +1,204 @@
+@{
+    ViewData["Title"] = "Aktivitelerim";
+}
+@model MythosBalance.ViewModels.ActivityIndexViewModel
+
+<div class="container py-4 position-relative z-1">
+
+    <!-- Sayfa Başlığı -->
+    <div class="page-header">
+        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+            <div>
+                <h1><i class="bi bi-journal-check me-2" style="font-size:1.5rem;"></i>Aktivitelerim</h1>
+                <p>Günlük yaşam aktivitelerinizi kaydedin ve takip edin.</p>
+            </div>
+            <a asp-action="Create" class="btn-gold" id="addActivityBtn">
+                <i class="bi bi-plus-lg me-2"></i>Yeni Aktivite
+            </a>
+        </div>
+    </div>
+
+    <!-- FİLTRE PANELI -->
+    <div class="glass-card-flat p-3 mb-4">
+        <form method="get" asp-action="Index" class="d-flex align-items-end gap-3 flex-wrap">
+            <div style="min-width:180px;">
+                <label class="form-label-mythos">Yaşam Alanı</label>
+                <select name="domainId" class="form-select-mythos" id="domainFilter">
+                    <option value="">Tüm Alanlar</option>
+                    @foreach (var domain in Model.LifeDomains)
+                    {
+                        <option value="@domain.Id" selected="@(Model.FilterDomainId == domain.Id ? "selected" : null)">
+                            @domain.TurkishName
+                        </option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label class="form-label-mythos">Başlangıç</label>
+                <input type="date" name="startDate" class="form-control-mythos"
+                       value="@Model.StartDate?.ToString("yyyy-MM-dd")" style="max-width:160px;" />
+            </div>
+            <div>
+                <label class="form-label-mythos">Bitiş</label>
+                <input type="date" name="endDate" class="form-control-mythos"
+                       value="@Model.EndDate?.ToString("yyyy-MM-dd")" style="max-width:160px;" />
+            </div>
+            <button type="submit" class="btn-gold" id="filterBtn">
+                <i class="bi bi-funnel me-1"></i>Filtrele
+            </button>
+            @if (Model.FilterDomainId.HasValue || Model.StartDate.HasValue || Model.EndDate.HasValue)
+            {
+                <a asp-action="Index" class="btn-ghost" id="clearFilterBtn">
+                    <i class="bi bi-x-circle me-1"></i>Temizle
+                </a>
+            }
+        </form>
+    </div>
+
+    <!-- Filtre Bilgisi -->
+    @if (Model.FilterDomainName != null)
+    {
+        <div class="alert-mythos mb-3">
+            <i class="bi bi-funnel-fill me-2"></i>
+            <strong>@Model.FilterDomainName</strong> alanına göre filtreleniyor —
+            @Model.Activities.Count aktivite bulundu.
+        </div>
+    }
+
+    <!-- AKTİVİTE LİSTESİ -->
+    @if (!Model.Activities.Any())
+    {
+        <div class="glass-card p-5 text-center">
+            <i class="bi bi-journal-x" style="font-size:3rem; color:var(--color-muted); opacity:0.4; display:block; margin-bottom:1rem;"></i>
+            <h3 style="font-size:1rem; color:var(--color-muted);">Henüz aktivite kaydı bulunmuyor</h3>
+            <p style="font-size:0.85rem; color:var(--color-muted); margin-top:0.5rem;">
+                @(Model.FilterDomainId.HasValue ? "Bu alana ait aktivite yok." : "İlk aktivitenizi ekleyerek başlayın.")
+            </p>
+            <a asp-action="Create" class="btn-gold mt-3" style="display:inline-flex; align-items:center; gap:0.4rem;">
+                <i class="bi bi-plus-lg"></i>İlk Aktiviteni Ekle
+            </a>
+        </div>
+    }
+    else
+    {
+        var yaklasan = Model.Activities.Where(a => a.Date.Date >= DateTime.Today).OrderBy(a => a.Date).ToList();
+        var gecmis = Model.Activities.Where(a => a.Date.Date < DateTime.Today).OrderByDescending(a => a.Date).ToList();
+
+        @if (yaklasan.Any())
+        {
+            <div class="glass-card p-0 overflow-hidden mb-4">
+                <div style="padding:0.85rem 1.25rem; border-bottom:1px solid var(--color-border);">
+                    <h3 style="font-family:var(--font-display); font-size:0.95rem; color:var(--color-gold); margin:0;">
+                        <i class="bi bi-calendar-check me-2"></i>Yaklaşan Aktiviteler
+                        <span style="font-family:var(--font-body); font-size:0.75rem; color:var(--color-muted); margin-left:0.5rem;">(@yaklasan.Count)</span>
+                    </h3>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr auto auto auto; gap:1rem;
+                            padding:0.65rem 1.25rem; border-bottom:1px solid var(--color-border-soft);
+                            font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-muted);">
+                    <span>Aktivite</span>
+                    <span>Tarih</span>
+                    <span>Süre</span>
+                    <span>İşlem</span>
+                </div>
+
+                @foreach (var activity in yaklasan)
+                {
+                    <div style="display:grid; grid-template-columns:1fr auto auto auto; gap:1rem; align-items:center;
+                                padding:0.9rem 1.25rem; border-bottom:1px solid rgba(60,40,10,0.05);
+                                transition:var(--transition);"
+                         onmouseover="this.style.background='rgba(154,110,46,0.04)'"
+                         onmouseout="this.style.background='transparent'">
+                        <div style="min-width:0;">
+                            <div style="display:flex; align-items:center; gap:0.6rem;">
+                                <span class="activity-dot" style="background:@activity.LifeDomain.ColorHex;"></span>
+                                <span style="font-weight:500; font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@activity.Title</span>
+                            </div>
+                            <div style="margin-top:0.2rem; padding-left:1rem;">
+                                <span class="badge-domain badge-@activity.LifeDomain.Name.ToLower()">
+                                    <i class="@activity.LifeDomain.IconClass" style="font-size:0.7rem;"></i>
+                                    @activity.LifeDomain.TurkishName
+                                </span>
+                            </div>
+                        </div>
+                        <div style="font-size:0.83rem; color:var(--color-muted); white-space:nowrap;">
+                            @activity.Date.ToString("d MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                        </div>
+                        <div style="font-size:0.83rem; color:var(--color-muted); white-space:nowrap; min-width:60px; text-align:center;">
+                            @if (activity.DurationMinutes.HasValue) { <span>@activity.DurationMinutes dk</span> } else { <span>—</span> }
+                        </div>
+                        <div style="display:flex; gap:0.4rem;">
+                            <a asp-action="Edit" asp-route-id="@activity.Id" class="btn-ghost" style="font-size:0.78rem; padding:0.35rem 0.7rem;" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@activity.Id" class="btn-danger-ghost" style="font-size:0.78rem; padding:0.35rem 0.7rem;" title="Sil"><i class="bi bi-trash3"></i></a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (gecmis.Any())
+        {
+            <div class="glass-card p-0 overflow-hidden">
+                <div style="padding:0.85rem 1.25rem; border-bottom:1px solid var(--color-border);">
+                    <h3 style="font-family:var(--font-display); font-size:0.95rem; color:var(--color-muted); margin:0;">
+                        <i class="bi bi-clock-history me-2"></i>Geçmiş Aktiviteler
+                        <span style="font-family:var(--font-body); font-size:0.75rem; margin-left:0.5rem;">(@gecmis.Count)</span>
+                    </h3>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr auto auto auto; gap:1rem;
+                            padding:0.65rem 1.25rem; border-bottom:1px solid var(--color-border-soft);
+                            font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-muted);">
+                    <span>Aktivite</span>
+                    <span>Tarih</span>
+                    <span>Süre</span>
+                    <span>İşlem</span>
+                </div>
+
+                @foreach (var activity in gecmis)
+                {
+                    <div style="display:grid; grid-template-columns:1fr auto auto auto; gap:1rem; align-items:center;
+                                padding:0.9rem 1.25rem; border-bottom:1px solid rgba(60,40,10,0.05);
+                                transition:var(--transition);"
+                         onmouseover="this.style.background='rgba(154,110,46,0.04)'"
+                         onmouseout="this.style.background='transparent'">
+                        <div style="min-width:0;">
+                            <div style="display:flex; align-items:center; gap:0.6rem;">
+                                <span class="activity-dot" style="background:@activity.LifeDomain.ColorHex;"></span>
+                                <span style="font-weight:500; font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@activity.Title</span>
+                            </div>
+                            <div style="margin-top:0.2rem; padding-left:1rem;">
+                                <span class="badge-domain badge-@activity.LifeDomain.Name.ToLower()">
+                                    <i class="@activity.LifeDomain.IconClass" style="font-size:0.7rem;"></i>
+                                    @activity.LifeDomain.TurkishName
+                                </span>
+                                @if (!string.IsNullOrEmpty(activity.Description))
+                                {
+                                    <span style="font-size:0.78rem; color:var(--color-muted); margin-left:0.5rem;">
+                                        @(activity.Description.Length > 50 ? activity.Description[..50] + "…" : activity.Description)
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div style="font-size:0.83rem; color:var(--color-muted); white-space:nowrap;">
+                            @activity.Date.ToString("d MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                        </div>
+                        <div style="font-size:0.83rem; color:var(--color-muted); white-space:nowrap; min-width:60px; text-align:center;">
+                            @if (activity.DurationMinutes.HasValue) { <span>@activity.DurationMinutes dk</span> } else { <span>—</span> }
+                        </div>
+                        <div style="display:flex; gap:0.4rem;">
+                            <a asp-action="Edit" asp-route-id="@activity.Id" class="btn-ghost" style="font-size:0.78rem; padding:0.35rem 0.7rem;" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@activity.Id" class="btn-danger-ghost" style="font-size:0.78rem; padding:0.35rem 0.7rem;" title="Sil"><i class="bi bi-trash3"></i></a>
+                        </div>
+                    </div>
+                }
+
+                <div style="padding:0.75rem 1.25rem; color:var(--color-muted); font-size:0.78rem;
+                            border-top:1px solid var(--color-border-soft); text-align:right;">
+                    Toplam @Model.Activities.Count aktivite
+                </div>
+            </div>
+        }
+    }
+</div>
