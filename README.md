@@ -6,41 +6,90 @@ Originally developed as a Web Programming course project, it evolved into a comp
 
 ## 🚀 Features
 
-*   **Mythological Domains:** Categorize your daily activities into 6 different mythological life domains.
-*   **Activity Tracking:** Track your tasks by separating them into "Past Activities" and "Upcoming Activities (Planned)".
-*   **Dynamic Statistics:** Visualize how much focus you give to each life domain with dynamic charts on your profile page.
-*   **Admin Panel:** A dedicated administrator interface to manage users, total activities, and mythological guides.
-*   **Custom Design:** Moving away from classic dashboards, it features a custom dark-mode interface with glassmorphism effects, inspired by ancient Greek aesthetics.
+| Feature | Description |
+|----------|-------------|
+| 🏛️ Mythological Domains | Categorize your daily activities into 5 different mythological life domains. |
+| ✅ Activity Tracking | Track your tasks by separating them into Past Activities and Upcoming Activities. |
+| 📊 Dynamic Statistics | Visualize your focus across life domains with interactive charts. |
+| 👨‍💼 Admin Panel | Manage users, activities, and mythological guides through a dedicated admin interface. |
+| 🎨 Custom Design | A mythology-inspired interface with a custom design system and immersive user experience. |
+
 
 ## 🏛️ The Mythological Guides
 
-In Mythos Balance, your life is divided into 5 distinct domains, each guided by a mythological figure that embodies its core values:
+| Guide | Domain | Description |
+|---------|---------|-------------|
+| 🩺 **Hygieia** | Health | Goddess of health and well-being, guiding healthy habits and preventive care. |
+| 🦉 **Athena** | Education | Goddess of wisdom and strategy, representing learning, knowledge, and personal development. |
+| 🎼 **Apollo** | Creativity | God of music, poetry, and arts, inspiring creativity and self-expression. |
+| 👟 **Hermes** | Travel | Patron of travelers and explorers, encouraging discovery and new experiences. |
+| 🌸 **Charites (The Graces)** | Social | Goddesses of joy, friendship, and social harmony, representing meaningful human connections. |
 
-*   **Hygieia (Health):** The goddess of health, cleanliness, and hygiene. She guides your physical and mental well-being, focusing on the philosophy of preventative care and healthy habits rather than just curing illness.
-*   **Athena (Education):** The goddess of wisdom, strategy, and science. She represents your intellectual journey, from reading books to acquiring new academic or professional skills. The owl, her symbol, represents seeing clearly through the darkness of ignorance.
-*   **Apollo (Creativity):** The god of music, poetry, and beauty. He governs your hobbies and creative expressions, inspiring every melody you play, picture you paint, or art piece you create.
-*   **Hermes (Travel):** The fleet-footed god of travelers and messengers. He is the patron of your journeys, explorations, and the breaking of boundaries as you discover new cities or cultures.
-*   **Charites / The Graces (Social):** The three goddesses of charm, joy, and social harmony (Aglaia, Euphrosyne, and Thalia). They represent the essence of human connection, friendship, empathy, and community celebrations.
 
 ## 🛠️ Technologies Used
 
-*   **Backend:** ASP.NET Core 8.0
-*   **Database:** SQLite (chosen for portability without requiring complex setup)
-*   **ORM:** Entity Framework Core (Code-First approach)
-*   **Authentication:** ASP.NET Core Identity (User registration, login, and role management)
-*   **Frontend:** HTML5, CSS3 (Custom Vanilla CSS), JavaScript
-*   **Libraries:** Bootstrap 5 (for grid system and basic layout), Chart.js (for data visualization and charts)
+| Category | Technology | Description |
+| :--- | :--- | :--- |
+| **Backend** | ASP.NET Core 8.0 | Core MVC framework for handling application logic. |
+| **Database** | SQLite | Lightweight database chosen for portability and zero-configuration. |
+| **ORM** | Entity Framework Core | Used with a Code-First approach for database modeling. |
+| **Security** | ASP.NET Core Identity | Built-in authentication, authorization, and role management. |
+| **Frontend** | HTML5, CSS3, JS | Custom luxury design using Vanilla CSS and JavaScript. |
+| **Libraries** | Bootstrap 5 & Chart.js | Bootstrap for grid layouts; Chart.js for dynamic data visualization. |
+
 
 ## 🏗️ Project Architecture & Structure
 
-The project is built on a layered **MVC (Model-View-Controller)** architecture and utilizes various design patterns to keep the code clean and maintainable:
+The project is built on a layered **MVC (Model-View-Controller)** architecture and utilizes the **Repository Design Pattern** to keep the codebase clean, testable, and maintainable.
 
-*   **Models:** Represents the database tables as C# classes (`Activity`, `ApplicationUser`, `MythologyGuide`, `LifeDomain`).
-*   **ViewModels:** DTO (Data Transfer Object) classes that contain only the necessary data to be passed to the View. This prevents exposing database entities directly to the presentation layer.
-*   **Controllers:** Handles incoming HTTP requests from the user, calls necessary services/repositories, and returns the appropriate View (`ActivityController`, `ProfileController`, `AdminController`).
-*   **Repositories:** The data access layer where database operations (CRUD) are performed. The **Repository Design Pattern** is used to isolate database queries from Controllers (`ActivityRepository`, `GuideRepository`).
-*   **Services:** The layer where business logic is implemented. For example, notification checks and data processing are handled here (`NotificationService`).
-*   **Views:** Razor (`.cshtml`) files that make up the user interface.
+### Folder Structure
+
+```text
+MythosBalance/
+ ├── Controllers/             # Application routing and HTTP request handlers
+ │   ├── ActivityController.cs # Manages user activities (CRUD)
+ │   ├── AdminController.cs    # Admin panel routing and user management
+ │   ├── GuideController.cs    # Mythological guide display logic
+ │   ├── HomeController.cs     # Main dashboard and landing page
+ │   └── ProfileController.cs  # User profile, statistics, and domain details
+ ├── Data/                    # Database context and seed data
+ │   ├── ApplicationDbContext.cs # EF Core database context
+ │   └── SeedData.cs           # Initial database population (Gods, Domains, Roles)
+ ├── Migrations/              # Entity Framework Core database migrations
+ ├── Models/                  # Core entities mapping to database tables
+ │   ├── Activity.cs
+ │   ├── ApplicationUser.cs    # Custom Identity user
+ │   ├── LifeDomain.cs         # E.g., Health, Education, Travel
+ │   └── MythologyGuide.cs     # E.g., Athena, Apollo, Hygieia
+ ├── Repositories/            # Data access layer (Repository Pattern)
+ │   ├── ActivityRepository.cs # Database queries for activities
+ │   └── GuideRepository.cs    # Database queries for mythological guides
+ ├── Services/                # Business logic layer
+ │   ├── ActivityService.cs    # Logic for upcoming/past activities
+ │   └── NotificationService.cs # Logic for user inactivity reminders
+ ├── ViewModels/              # Data Transfer Objects (DTOs) for UI representation
+ │   ├── DashboardViewModel.cs
+ │   └── ProfileViewModels.cs
+ ├── Views/                   # Razor pages (.cshtml)
+ │   ├── Activity/            # Activity creation and editing forms
+ │   ├── Admin/               # Admin dashboard views
+ │   ├── Profile/             # Profile & dynamic chart views
+ │   └── Shared/              # Main layout (_Layout.cshtml) and common UI components
+ └── wwwroot/                 # Static web assets
+     ├── css/                 # Custom luxury design system (site.css)
+     ├── images/              # Logos and asset folders
+     │   └── gods/            # High-quality mythological guide portraits
+     └── js/                  # Custom client-side scripts (Chart.js initializers)
+```
+
+### Architectural Layers
+
+*   **Models:** Represents the database tables as C# classes.
+*   **ViewModels:** DTO (Data Transfer Object) classes that prevent exposing database entities directly to the presentation layer.
+*   **Controllers:** Directs user flow by calling necessary repositories and services, then returning the appropriate View.
+*   **Repositories:** Isolates database query logic from the controllers.
+*   **Services:** Handles pure business rules, independent of HTTP contexts or database queries.
+*   **Views:** Responsible purely for rendering the UI using data provided by the ViewModels.
 
 ## ⚙️ Setup & Installation
 
@@ -48,7 +97,7 @@ To run the project on your local machine, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/MythosBalance.git
+    git clone https://github.com/SuhedaNur4/MythosBalance.git
     cd MythosBalance
     ```
 
