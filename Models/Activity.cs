@@ -17,6 +17,9 @@ namespace MythosBalance.Models
         [DataType(DataType.Date)]
         public DateTime Date { get; set; } = DateTime.Today;
 
+        [DataType(DataType.Date)]
+        public DateTime? EndDate { get; set; }
+
         [Range(1, 1440, ErrorMessage = "Süre 1 ile 1440 dakika arasında olmalıdır.")]
         public int? DurationMinutes { get; set; }
 

@@ -54,7 +54,7 @@ namespace MythosBalance.Services
                 LifeDomainOptions = domains.Select(d => new SelectListItem
                 {
                     Value = d.Id.ToString(),
-                    Text = $"{d.TurkishName} ({d.Name})"
+                    Text = d.TurkishName
                 }).ToList()
             };
         }
@@ -71,12 +71,13 @@ namespace MythosBalance.Services
                 Title = activity.Title,
                 Description = activity.Description,
                 Date = activity.Date,
+                EndDate = activity.EndDate,
                 DurationMinutes = activity.DurationMinutes,
                 LifeDomainId = activity.LifeDomainId,
                 LifeDomainOptions = domains.Select(d => new SelectListItem
                 {
                     Value = d.Id.ToString(),
-                    Text = $"{d.TurkishName} ({d.Name})",
+                    Text = d.TurkishName,
                     Selected = d.Id == activity.LifeDomainId
                 }).ToList()
             };
@@ -89,6 +90,7 @@ namespace MythosBalance.Services
                 Title = model.Title,
                 Description = model.Description,
                 Date = model.Date,
+                EndDate = model.EndDate,
                 DurationMinutes = model.DurationMinutes,
                 LifeDomainId = model.LifeDomainId,
                 UserId = userId,
@@ -106,6 +108,7 @@ namespace MythosBalance.Services
             activity.Title = model.Title;
             activity.Description = model.Description;
             activity.Date = model.Date;
+            activity.EndDate = model.EndDate;
             activity.DurationMinutes = model.DurationMinutes;
             activity.LifeDomainId = model.LifeDomainId;
 

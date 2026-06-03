@@ -17,8 +17,12 @@ namespace MythosBalance.ViewModels
 
         [Required(ErrorMessage = "Tarih zorunludur.")]
         [DataType(DataType.Date)]
-        [Display(Name = "Tarih")]
+        [Display(Name = "Başlangıç Tarihi")]
         public DateTime Date { get; set; } = DateTime.Today;
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Bitiş Tarihi (Opsiyonel)")]
+        public DateTime? EndDate { get; set; }
 
         [Range(1, 1440, ErrorMessage = "Süre 1 ile 1440 dakika arasında olmalıdır.")]
         [Display(Name = "Süre (Dakika)")]
