@@ -13,7 +13,7 @@
                 <p>Günlük yaşam aktivitelerinizi kaydedin ve takip edin.</p>
             </div>
             <a asp-action="Create" class="btn-gold" id="addActivityBtn">
-                <i class="bi bi-plus-lg me-2"></i>Yeni Aktivite
+                Yeni Aktivite Ekle
             </a>
         </div>
     </div>
@@ -84,9 +84,11 @@
         var yaklasan = Model.Activities.Where(a => a.Date.Date >= DateTime.Today).OrderBy(a => a.Date).ToList();
         var gecmis = Model.Activities.Where(a => a.Date.Date < DateTime.Today).OrderByDescending(a => a.Date).ToList();
 
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
         @if (yaklasan.Any())
         {
-            <div class="glass-card p-0 overflow-hidden mb-4">
+            <div class="glass-card p-0 overflow-hidden h-100">
                 <div style="padding:0.85rem 1.25rem; border-bottom:1px solid var(--color-border);">
                     <h3 style="font-family:var(--font-display); font-size:0.95rem; color:var(--color-gold); margin:0;">
                         <i class="bi bi-calendar-check me-2"></i>Yaklaşan Aktiviteler
@@ -136,10 +138,12 @@
                 }
             </div>
         }
+            </div>
 
+            <div class="col-md-6">
         @if (gecmis.Any())
         {
-            <div class="glass-card p-0 overflow-hidden">
+            <div class="glass-card p-0 overflow-hidden h-100">
                 <div style="padding:0.85rem 1.25rem; border-bottom:1px solid var(--color-border);">
                     <h3 style="font-family:var(--font-display); font-size:0.95rem; color:var(--color-muted); margin:0;">
                         <i class="bi bi-clock-history me-2"></i>Geçmiş Aktiviteler
@@ -200,5 +204,7 @@
                 </div>
             </div>
         }
+            </div>
+        </div>
     }
 </div>
