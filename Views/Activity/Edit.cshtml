@@ -46,14 +46,19 @@
                     <!-- Tarih + Süre yan yana -->
                     <div class="row g-4 mb-4">
                         <div class="col-sm-6">
-                            <label class="label-minimal" for="actDate">Ne Zaman?</label>
+                            <label class="label-minimal" for="actDate">Başlangıç Tarihi</label>
                             <input asp-for="Date" id="actDate" class="input-minimal" type="date" />
                         </div>
                         <div class="col-sm-6">
-                            <label class="label-minimal" for="actDuration">Süre (Dakika)</label>
-                            <input asp-for="DurationMinutes" id="actDuration" class="input-minimal"
-                                   type="number" min="1" max="1440" placeholder="ör: 30" />
+                            <label class="label-minimal" for="actEndDate">Bitiş Tarihi (Opsiyonel)</label>
+                            <input asp-for="EndDate" id="actEndDate" class="input-minimal" type="date" />
                         </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="label-minimal" for="actDuration">Süre (Dakika)</label>
+                        <input asp-for="DurationMinutes" id="actDuration" class="input-minimal"
+                               type="number" min="1" max="1440" placeholder="ör: 30" />
                     </div>
 
                     <!-- Açıklama -->
